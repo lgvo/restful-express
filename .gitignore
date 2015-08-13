@@ -1,0 +1,4 @@
+node_modules/
+common.js
+tmux.sh
+*.swp

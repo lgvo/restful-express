@@ -1,0 +1,21 @@
+{
+  "name": "express-restful-processor",
+  "version": "0.0.1",
+  "description": "Process RESTful Metadata definitions into Express Framework",
+  "main": "common.js",
+  "dependencies": {},
+  "devDependencies": {
+    "babel": "~5.6.14",
+    "chai": "~3.0.0",
+    "karma": "~0.12.37",
+    "chai-as-promised": "~5.1.0",
+    "sinon": "~1.15.4",
+    "mocha": "~2.2.5"
+  },
+  "scripts": {
+    "build": "babel --modules common restful-express.js > common.js",
+    "test": "mocha --compilers js:babel/register restful-express-es6.spec.js"
+  },
+  "author": "Luis Oliveira <luisgustavo.vilela@gmail.com> (http://github.com/lgvo)",
+  "license": "MIT"
+}
