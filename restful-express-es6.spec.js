@@ -1,7 +1,7 @@
 import chai from 'chai';
 
 import {get, post, put, endPoint} from 'restful-decorators';
-import {process, runFunctionBefore} from './restful-express';
+import {process, runFunctionBefore, useClassicWraper} from './restful-express';
 
 const expect = chai.expect;
 
@@ -22,6 +22,8 @@ class Router {
         this.routes[`PUT:${url}`] = methods;
     }
 }
+
+useClassicWraper();
 
 describe('HttpMethods', function() {
 

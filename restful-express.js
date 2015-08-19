@@ -20,17 +20,15 @@
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {processEndPoints} from 'restful-decorators';
+import {provider} from 'di-decorators';
+import * as promiseWrapper from 'express-promise-wrapper';
 
 var wrappers = {
     promise: (class_, method) => {
-        return function(req, res, next) {
-            method.call(config.instanceProvider(class_), req)
-            .then()
-            .catch(next);
-        };
+        return promiseWrapper.wrap(method, config.instanceProvider(class_));
     },
 
-    callback: (class_, method) => {
+    classic: (class_, method) => {
         return function(req, res, next) {
             return method.call(config.instanceProvider(class_), req, res, next);
         };
@@ -39,46 +37,46 @@ var wrappers = {
 
 
 var config = {
-    instanceProvider: function(class_) {
-       return function() {
-            new class_();
-        };
-    },
-    wrapper: wrappers.callback
+    instanceProvider: provider,
+    wrapper: wrappers.promise
 };
 
+export function useClassicWraper() {
+    config.wrapper = wrappers.classic;
+}
+
 export function runFunctionBefore(config, func) {
-    config.runBefore = config.runBefore || []; 
+    config.runBefore = config.runBefore || [];
     config.runBefore.push(func);
 }
 
 export function process(router, ...classes) {
 
     classes.forEach((class_) => {
-         processEndPoints(class_, (httpMethod, method, url, methodConfig, classURL, classConfig) => {
+        processEndPoints(class_, (httpMethod, method, url, methodConfig, classURL, classConfig) => {
 
-             var endPointURL = '';
-             if (classURL) {
-                 endPointURL += classURL;
-             }
-             if (url) {
-                 endPointURL += url;
-             }
+            var endPointURL = '';
+            if (classURL) {
+                endPointURL += classURL;
+            }
+            if (url) {
+                endPointURL += url;
+            }
 
-             var params = [endPointURL];
+            var params = [endPointURL];
 
-             if (classConfig && classConfig.runBefore) {
+            if (classConfig && classConfig.runBefore) {
                 params = params.concat(classConfig.runBefore);
-             }
+            }
 
-             if (methodConfig.runBefore) {
-                params = params.concat(methodConfig.runBefore); 
-             }
+            if (methodConfig.runBefore) {
+                params = params.concat(methodConfig.runBefore);
+            }
 
             params.push(config.wrapper(class_, method));
 
-             router[httpMethod.toLowerCase()].apply(router, params);
-             
-         });
+            router[httpMethod.toLowerCase()].apply(router, params);
+
+        });
     });
 }
