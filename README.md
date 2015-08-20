@@ -120,7 +120,8 @@ class Login {
         res.send('Logged');
     }
 
-    // will create a post endpoint into '/logout' to logout the user, if the user is not logged will return 401
+    // will create a post endpoint into '/logout' to logout the user, 
+    // if the user is not logged will return 401
     @post('/logout', requireLogin)
     logout(req, res, next) {
         req.logout();
@@ -144,7 +145,8 @@ function requireRole(role) {
     };
 }
 
-// defining the requireLogin at the endPoint level will call that before any endpoint of the class.
+// defining the requireLogin at the endPoint level will call that 
+// before any endpoint of the class.
 endPoint('/user', requireLogin)
 class User {
 
@@ -164,7 +166,9 @@ class User {
     }
 }
 
-// That way all endpoints will require login, only users with the USER role can 'create' and 'update' and only users with ADMIN role can 'delete'.
+// That way all endpoints will require login, 
+// only users with the USER role can 'create' and 'update' 
+// and only users with ADMIN role can 'delete'.
 
 ```
 

@@ -1,12 +1,21 @@
 {
   "name": "restful-express",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Process RESTful Metadata definitions into Express Framework",
   "main": "common.js",
   "repository": "lgvo/restful-express",
   "dependencies": {
     "restful-decorators": "0.0.1"
   },
+  "keywords": [
+      "express",
+      "restful",
+      "middleware",
+      "REST",
+      "decorators",
+      "decorator",
+      "router"
+  ],
   "devDependencies": {
     "babel": "~5.6.14",
     "chai": "~3.0.0",
