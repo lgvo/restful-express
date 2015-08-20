@@ -1,7 +1,6 @@
 import chai from 'chai';
 
-import {get, post, put, endPoint} from 'restful-decorators';
-import {process, runFunctionBefore, useClassicWraper} from './restful-express';
+import {get, post, put, endPoint, process, runFunctionBefore} from './restful-express';
 
 const expect = chai.expect;
 
@@ -22,8 +21,6 @@ class Router {
         this.routes[`PUT:${url}`] = methods;
     }
 }
-
-useClassicWraper();
 
 describe('HttpMethods', function() {
 
@@ -74,18 +71,6 @@ describe('HttpMethods', function() {
         expect(router.routes['PUT:/test'][0]()).to.be.true;
     });
 
-});
-
-describe('Reponse', function() {
-
-    it('should define a ObjectJson Response Type', function() {
-        
-    });
-
-    it('should define a CollectionJson Reponse Type', function() {
-        
-    });;
-    
 });
 
 describe('Middleware', function() {

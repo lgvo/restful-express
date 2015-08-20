@@ -19,30 +19,59 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import {processEndPoints} from 'restful-decorators';
-import {provider} from 'di-decorators';
-import * as promiseWrapper from 'express-promise-wrapper';
+import * as decorators from 'restful-decorators';
 
 var wrappers = {
-    promise: (class_, method) => {
-        return promiseWrapper.wrap(method, config.instanceProvider(class_));
-    },
-
-    classic: (class_, method) => {
+    classic: function(method, provider) {
         return function(req, res, next) {
-            return method.call(config.instanceProvider(class_), req, res, next);
+            return method.call(provider(), req, res, next);
         };
     }
 };
 
-
-var config = {
-    instanceProvider: provider,
-    wrapper: wrappers.promise
+var instanceProviders = {
+    request: function(class_) {
+        return function() {
+            return new class_();
+        };
+    },
+    classic: function(class_) {
+        var instance = new class_();
+        return function() {
+            return instance;
+        };
+    }
 };
 
+var config = {
+    instanceProvider: instanceProviders.classic,
+    wrapper: wrappers.classic
+};
+
+export const get = decorators.get;
+export const post = decorators.post;
+export const put = decorators.put;
+export const del = decorators.del;
+export const endPoint = decorators.endPoint;
+
+export function useWrapper(wrapper) {
+    config.wrapper = wrapper;
+}
+
 export function useClassicWraper() {
-    config.wrapper = wrappers.classic;
+    useWrapper(wrappers.classic);
+}
+
+export function useInstanceProvider(provider) {
+    config.instanceProvider = provider;
+}
+
+export function useClassicInstanceProvider() {
+    useInstanceProvider(instanceProviders.classic);
+}
+
+export function useRequestInstanceProvider() {
+    useInstanceProvider(instanceProviders.request);
 }
 
 export function runFunctionBefore(config, func) {
@@ -52,8 +81,8 @@ export function runFunctionBefore(config, func) {
 
 export function process(router, ...classes) {
 
-    classes.forEach((class_) => {
-        processEndPoints(class_, (httpMethod, method, url, methodConfig, classURL, classConfig) => {
+    classes.forEach(function(class_) {
+        decorators.processEndPoints(class_, function(httpMethod, method, url, methodConfig, classURL, classConfig) {
 
             var endPointURL = '';
             if (classURL) {
@@ -73,7 +102,7 @@ export function process(router, ...classes) {
                 params = params.concat(methodConfig.runBefore);
             }
 
-            params.push(config.wrapper(class_, method));
+            params.push(config.wrapper(method, config.instanceProvider(class_)));
 
             router[httpMethod.toLowerCase()].apply(router, params);
 
