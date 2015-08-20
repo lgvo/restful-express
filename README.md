@@ -204,7 +204,7 @@ class SayHello {
 
 ### Using Promises to avoid Callback Hell
 
-You can use [express-promise-wrapper](https://github.com/lgvo/express-promise-wrapper) and all methods of endpoints can return a promise.
+You can use [express-promise-wrapper](https://github.com/lgvo/express-promise-wrapper) that way all methods of endpoints can return a promise.
 It will call the "next" callback passing any any error catch by the promise.
 
 ```javascript
