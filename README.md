@@ -83,6 +83,91 @@ router.put('/user/:id', function(req, res, next) {
 
 ```
 
+### Taking advantage of Middleware
+
+There is no point in using Express without leveraging the middleware capabilities.
+You can do that in a declarative way to. I will show a example using [passport]() to provide authentication.
+
+```javascript
+
+// using passport 
+import express from 'express';
+import passport from 'passport';
+import {get, post, put, del, endPoint, runFunctionBefore} from 'restful-express';
+
+// will autheticate the user based on the passport local strategy
+function authenticate(config) {
+    runFunctionBefore(config, passport.autheticate('local'));
+}
+
+// will verify if the user is logged and if not will send the status 401
+function requireLogin(config) {
+    runFunctionBefore(config, function(req, res, next) {
+        if (req.user) {
+            next();
+        } else {
+            res.status(401).end();
+        }
+    });
+}
+
+@endPoint()
+class Login {
+    
+    // will create a post endpoint into '/login' to authenticate the user
+    @post('/login', authenticate)
+    login(req, res, next) {
+        res.send('Logged');
+    }
+
+    // will create a post endpoint into '/logout' to logout the user, if the user is not logged will return 401
+    @post('/logout', requireLogin)
+    logout(req, res, next) {
+        req.logout();
+        res.send('LoggedOut');
+    }
+}
+
+// you can use the closure scope to provide more information
+// in the follow example, I will show how to create a authorization mechanism
+// assuming that when logged you put some roles at the req.user.roles 
+
+function requireRole(role) {
+    return function(config) {
+        runFunctionBefore(config, function(req, res, next) {
+            if (req.user.roles[role]) {
+                next();
+            } else {
+                res.status(403).end();
+            }
+        });
+    };
+}
+
+// defining the requireLogin at the endPoint level will call that before any endpoint of the class.
+endPoint('/user', requireLogin)
+class User {
+
+    @post(requireRole('USER'))
+    create(req, res, next) {
+        // ...
+    }
+
+    @put(requireRole('USER'))
+    update(req, res, next) {
+        // ...
+    }
+
+    @del(require('ADMIN'))
+    delete(req, res, next) {
+        // ...
+    }
+}
+
+// That way all endpoints will require login, only users with the USER role can 'create' and 'update' and only users with ADMIN role can 'delete'.
+
+```
+
 ### Getting more with Denpendency Injection
 
 You can use [di-decorators](https://github.com/lgvo/di-decorators) to provide dependency injection to your endpoints.
