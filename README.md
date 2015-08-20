@@ -61,16 +61,24 @@ process(app.router(), MyClass);
 
 // it will do the same as:
 var router = app.router();
-
-var obj = new MyClass();
-
-router.get('/user/:id', function(req, res, next) {
-   return obj.find(req, res, next); 
+var obj1 = new MyClass();
+router.post('/user', function(req, res, next) {
+   return obj1.create(req, res, next); 
 });
 
-
+var obj2 = new MyClass();
 router.get('/user/:id', function(req, res, next) {
-   return obj.find(req, res, next); 
+   return obj2.find(req, res, next); 
+});
+
+var obj3 = new MyClass();
+router.get('/user/:id', function(req, res, next) {
+   return obj3.find(req, res, next); 
+});
+
+var obj4 = new MyClass();
+router.put('/user/:id', function(req, res, next) {
+   return obj4.update(req, res, next); 
 });
 
 ```
@@ -109,11 +117,10 @@ class SayHello {
 
 ```
 
-
-
 ### Using Promises to avoid Callback Hell
 
-You can use [express-promise-wrapper](https://github.com/lgvo/express-promise-wrapper) and all methods of your methods of your endpoints can return a promise.
+You can use [express-promise-wrapper](https://github.com/lgvo/express-promise-wrapper) and all methods of endpoints can return a promise.
+It will call the "next" callback passing any any error catch by the promise.
 
 ```javascript
 import {get, post, put, del, endPoint, process, useWrapper} from 'restful-express';
@@ -136,8 +143,8 @@ class SayHello {
 
 ## Contributing
 
-* Please take the time to star the project if you like it "npm star restful-express" and also on github [restful-express](https://github.com/lgvo/restful-express).
-* Feel free to fork, and if you are planning to add more features please open a issue so que can discuss about.
+* Please take the time to star the project if you like it! "npm star restful-express" and also on github [restful-express](https://github.com/lgvo/restful-express).
+* Feel free to fork, and if you are planning to add more features please open a issue so we can discuss about.
 
 ## License
 [MIT](LICENSE)

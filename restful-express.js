@@ -1,4 +1,4 @@
-// one line to give the program's name and a brief description
+// restful-express - Process RESTful Metadata definitions into Express Framework
 // Copyright © 2015 Luis Gustavo Vilela de Oliveira
 // 
 // Permission is hereby granted, free of charge, to any person obtaining
