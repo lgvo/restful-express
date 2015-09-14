@@ -1,5 +1,7 @@
 # RESTful Express
 
+[![Join the chat at https://gitter.im/lgvo/restful-express](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/lgvo/restful-express?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This project is declarative way to define Express routers using decorators.
 
 ## Installation
